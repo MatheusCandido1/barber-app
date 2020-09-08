@@ -38,9 +38,9 @@ export default {
         const json = await req.json();
         return json;
     },
-    getBarbers: async() => {
+    getBarbers: async(lat=null, long=null, address=null) => {
         const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/barbers?token=${token}`);
+        const req = await fetch(`${BASE_API}/barbers?token=${token}&lat=${lat}&long=${long}&address${address}`);
         const json = await req.json();
         return json;
     }
