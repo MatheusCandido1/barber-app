@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
+import { useNavigation } from '@react-navigation/native';
 
 import Rating from '../Components/Rating';
 
@@ -44,8 +45,19 @@ const ProfileButtonText = styled.Text`
 
 
 export default({data}) => {
+    const navigation = useNavigation();
+
+    const handleBarberClick = () => {
+        navigation.navigate('Barber', {
+            id: data.id,
+            avatar: data.avatar,
+            name: data.name,
+            starts: data.stars
+        });
+    }
+
     return(
-        <Area>
+        <Area onPress={handleBarberClick}>
             <Avatar source={{uri: data.avatar}} />
             <InfoArea>
                 <BarberName>{data.name}</BarberName>
