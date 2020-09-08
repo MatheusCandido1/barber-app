@@ -1,10 +1,18 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+import CustomTabBar from '../Components/CustomTabBar';
+
+import Home from '../Screens/Tabs/Home';
+import Search from '../Screens/Tabs/Search';
+import Appointments from '../Screens/Tabs/Appointments';
+import Favorites from '../Screens/Tabs/Favorites';
+import Profile from '../Screens/Tabs/Profile';
+
 const Tab = createBottomTabNavigator();
 
 export default () => (
-    <Tab.Navigator>
+    <Tab.Navigator tabBar={props=><CustomTabBar {...props} />}>
         <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="Search" component={Search} />
         <Tab.Screen name="Appointments" component={Appointments} />
