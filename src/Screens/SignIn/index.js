@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Text } from 'react-native';
 
+import { useNavigation } from '@react-navigation/native';
+
 import SignInput from '../../Components/SignInput';
 
 import EmailIcon from '../../Assets/email.svg';
@@ -19,8 +21,20 @@ import {
 } from './styles';
 
 export default () => {
+    const navigation = useNavigation();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const handleMessageButtonClick = () => {
+        navigation.reset({
+            routes: [{name: 'SignUp'}]
+        });
+    }
+
+    const handleSignInClick = () => {
+        
+    }
 
     return(
         <Container>
@@ -42,12 +56,12 @@ export default () => {
                     IsPassword={true}
                  />
 
-                <CustomButton>
+                <CustomButton onPress={handleSignInClick}>
                     <CustomButtonText>Entrar</CustomButtonText>
                 </CustomButton>
             </InputArea>
 
-            <SignMessageButton>
+            <SignMessageButton onPress={handleMessageButtonClick}>
                 <SignMessageButtonText>Ainda não possui uma conta?</SignMessageButtonText>
                 <SignMessageButtonTextBold>Cadastre-se!</SignMessageButtonTextBold>
             </SignMessageButton>
