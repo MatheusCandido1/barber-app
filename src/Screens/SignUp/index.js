@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Text } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import { useNavigation } from '@react-navigation/native';
+
+import { UserContext } from '../../Contexts/UserContext';
+
+import Api from '../../Api';
 
 import SignInput from '../../Components/SignInput';
 
@@ -23,6 +28,7 @@ import {
 } from './styles';
 
 export default () => {
+    const { dispatch: userDispatch } = useContext(UserContext);
     const navigation = useNavigation();
     
     const [name, setName] = useState('');
@@ -35,8 +41,28 @@ export default () => {
         });
     }
 
-    const handleSignUpClick = () => {
-        
+    const handleSignUpClick = async () => {
+        if(name != '' || email != '' || password != ''){
+            let response = await Api.signUp(name, email, password);
+            if(response.token) {
+                await AsyncStorage.setItem('token', response.token);
+
+                userDispatch({
+                    type: 'setAvatar',
+                    payload: {
+                        avatar: response.data.avatar
+                    }
+                });
+                
+                navigation.reset({
+                    routes: [{ name: 'MainTab'}]
+                });
+            } else {
+                alert(response.error);
+            }
+        } else {
+            alert('Preencha todos os campos!');
+        }
     }
 
     return(

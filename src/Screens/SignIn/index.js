@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Text } from 'react-native';
 
+import AsyncStorage from '@react-native-community/async-storage';
+
 import { useNavigation } from '@react-navigation/native';
+
+import { UserContext } from '../../Contexts/UserContext';
+
+import Api from '../../Api';
 
 import SignInput from '../../Components/SignInput';
 
@@ -21,6 +27,7 @@ import {
 } from './styles';
 
 export default () => {
+    const { dispatch: userDispatch } = useContext(UserContext);
     const navigation = useNavigation();
 
     const [email, setEmail] = useState('');
@@ -32,8 +39,30 @@ export default () => {
         });
     }
 
-    const handleSignInClick = () => {
-        
+    const handleSignInClick =  async () => {
+        if(email != '' || password != ''){
+            let response = await Api.signIn(email, password);
+
+            if(response.token) {
+                await AsyncStorage.setItem('token', response.token);
+
+                userDispatch({
+                    type: 'setAvatar',
+                    payload: {
+                        avatar: response.data.avatar
+                    }
+                });
+
+                navigation.reset({
+                    routes: [{ name: 'MainTab'}]
+                });
+
+            } else {
+                alert('E-mail e/ou senha incorretos!');
+            }
+        } else {
+            alert('Preencha todos os campos!');
+        }
     }
 
     return(
