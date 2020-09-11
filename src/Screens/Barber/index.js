@@ -11,7 +11,7 @@ import {
     UserInfoArea,
     ServiceArea,
     TestimonialArea,
-    TestiomnialItem,
+    TestimonialItem,
     TestimonialInfo,
     TestimonialName,
     TestimonialBody,
@@ -27,7 +27,7 @@ import {
     ServiceName,
     ServicePrice,
     ScheduleButton,
-    ScheduleButtonText,
+    ScheduleButtonText
  } from './styles';
  import Swiper from 'react-native-swiper';
 
@@ -53,20 +53,23 @@ export default () => {
         stars: route.params.stars
     });
 
+
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const getBarberInfo = async () => {
-            setLoading(true);
-            let json = await Api.getBarber(userInfo.id);
-            if(json.error == ''){
-                setUserInfo(json.data);
-            } else {
-                alert('Erro: '+json.error);
-            }
-
-            setLoading(false);
+    const getBarberInfo = async () => {
+        setLoading(true);
+        let json = await Api.getBarber(userInfo.id);
+        if(json.error == ''){
+            setUserInfo(json.data);
+            console.log(json.data);
+        } else {
+            alert('Erro: '+json.error);
         }
+        setLoading(false);
+    }
+
+    useEffect(() => {
+        
         getBarberInfo();
     }, []);
 
@@ -77,8 +80,7 @@ export default () => {
     return (
         <Container>
             <Scroller>
-                {userInfo.photos && userInfo.photos.lenght > 0 ?
-                
+                {userInfo.photos && 
                     <Swiper
                         style={{height:240}}
                         dot={<SwipeDot />}
@@ -91,11 +93,7 @@ export default () => {
                                 <SwipeImage source={{uri:item.url}} resizeMode="cover"/>
                             </SwipeItem>
                         ))}
-                    </Swiper>
-                    :
-                    <FakeSwiper>
-
-                    </FakeSwiper>    
+                    </Swiper>  
                 }
                 <Body>
                     <UserInfoArea>
@@ -128,7 +126,7 @@ export default () => {
                             ))}
                     </ServiceArea>
 }
-                    {userInfo.testimonials && userInfo.testimonials.lenght > 0 &&
+                    {userInfo.testimonials &&
                     <TestimonialArea>
                         <Swiper
                             style={{height: 110}}
