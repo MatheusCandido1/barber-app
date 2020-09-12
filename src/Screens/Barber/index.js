@@ -34,10 +34,13 @@ import {
 import { useNavigation, useRoute} from '@react-navigation/native';
 
 import Rating from '../../Components/Rating';
+import BarberModal from '../../Components/BarberModal';
 
 import Api from '../../Api';
 
-import FavoriteIcon from '../../Assets/favorite.svg';
+import UnfavoriteIcon from '../../Assets/favorite.svg';
+import FavoriteIcon from '../../Assets/favorite_full.svg';
+
 import BackIcon from '../../Assets/back.svg';
 import NavPrevIcon from '../../Assets/nav_prev.svg';
 import NavNextIcon from '../../Assets/nav_next.svg';
@@ -55,13 +58,16 @@ export default () => {
 
 
     const [loading, setLoading] = useState(false);
+    const [favorite, setFavorite] = useState(false);
+    const [selectedService, setSelectedService] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
     const getBarberInfo = async () => {
         setLoading(true);
         let json = await Api.getBarber(userInfo.id);
         if(json.error == ''){
             setUserInfo(json.data);
-            console.log(json.data);
+            setFavorite(json.data.favorite)
         } else {
             alert('Erro: '+json.error);
         }
@@ -77,10 +83,19 @@ export default () => {
         navigation.goBack();
     }
 
+    const handleFavoriteClick = () => {
+        setFavorite(!favorite);
+    }
+
+    const handleServiceClick = (key) => {
+        setSelectedService(key);
+        setShowModal(true);
+    }
+
     return (
         <Container>
             <Scroller>
-                {userInfo.photos && 
+                {userInfo.photos && userInfo.photos.length > 0 ?
                     <Swiper
                         style={{height:240}}
                         dot={<SwipeDot />}
@@ -94,6 +109,10 @@ export default () => {
                             </SwipeItem>
                         ))}
                     </Swiper>  
+                    :
+                    <FakeSwiper>
+
+                    </FakeSwiper>
                 }
                 <Body>
                     <UserInfoArea>
@@ -102,8 +121,12 @@ export default () => {
                                 <UserInfoName>{userInfo.name}</UserInfoName>
                                 <Rating starts={userInfo.stars} showRating={true} />
                             </UserInfo>
-                            <UserFavButton>
-                                <FavoriteIcon width="24" height="24" fill="#FF0000" />
+                            <UserFavButton onPress={handleFavoriteClick}>
+                                {favorite ? 
+                                <FavoriteIcon width="32" height="32" fill="#FF0000" />
+                                :
+                                <UnfavoriteIcon width="32" height="32" fill="#FF0000" />
+                                }
                             </UserFavButton>
                     </UserInfoArea>
                         {loading && 
@@ -117,9 +140,9 @@ export default () => {
                                 <ServiceItem key={key}>
                                     <ServiceInfo>
                                         <ServiceName>{item.name}</ServiceName>
-                                        <ServicePrice>R$ {item.price}</ServicePrice>
+                                        <ServicePrice>R$ {item.price.toFixed(2)}</ServicePrice>
                                     </ServiceInfo>
-                                    <ScheduleButton>
+                                    <ScheduleButton onPress={() => handleServiceClick(key)}> 
                                         <ScheduleButtonText>Agendar</ScheduleButtonText>
                                     </ScheduleButton>
                                 </ServiceItem>
@@ -157,6 +180,13 @@ export default () => {
         <BackButton onPress={handleBackButton}>
             <BackIcon width="44" height="44" fill="#FFFFFF" />
         </BackButton>
+
+                <BarberModal
+                    show={showModal}
+                    setShow={setShowModal}
+                    barber={userInfo}
+                    service={selectedService}
+                />
         </Container>
     );
 }

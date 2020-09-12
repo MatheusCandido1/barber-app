@@ -38,7 +38,7 @@ export const SwipeImage = styled.Image`
 `;
 
 export const FakeSwiper = styled.View`
-    height: 240px;
+    height: 140px;
     background-color: #63C2D1;
 `;
 
@@ -77,11 +77,11 @@ export const UserInfoName = styled.Text`
 `;
 
 export const UserFavButton = styled.TouchableOpacity`
-    width: 40px;
-    height: 40px;
+    width: 54px;
+    height: 54px;
     background-color: #FFFFFF;
     border: 2px solid #63C2D1;
-    border-radius: 20px;
+    border-radius: 27px;
     justify-content: center;
     align-items: center;
     margin-top: 10px;
