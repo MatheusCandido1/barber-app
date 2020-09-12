@@ -7,6 +7,8 @@ import ExpandIcon from '../Assets/expand.svg';
 import NavPrevIcon from '../Assets/nav_prev.svg';
 import NavNextIcon from '../Assets/nav_next.svg';
 
+import Api from '../Api';
+
 const Modal = styled.Modal``;
 
 const ModalArea = styled.View`
@@ -213,6 +215,7 @@ export default ({ show, setShow, barber, service }) => {
                 setHour(availability[0].hours);
             }
         }
+        setSelectedHour(null);
     }, [barber, selectedDay])
 
     useEffect(() => {
@@ -278,8 +281,27 @@ export default ({ show, setShow, barber, service }) => {
         setSelectedYear(mountDate.getFullYear());
     }
 
-    const handleScheduleClick = () => {
-
+    const handleScheduleClick = async () => {
+        if( barber.id && service != null && selectedYear > 0 && selectedMonth > 0 && selectedDay > 0 && selectedHour != null) {
+           /* let response = await Api.setAppoitment(
+                user.id,
+                service,
+                selectedYear,
+                selectedMonth,
+                selectedDay,
+                selectedHour
+            );
+            if(response.error == '') {
+                setShow(false);
+                navigation.navigate('Appointments');
+            } else {
+                alert(res.error);
+            } */
+                setShow(false);
+                navigation.navigate('Appointments');
+        } else {
+            alert("Preencha todos os dados");
+        }
     }
 
     return (
@@ -350,9 +372,12 @@ export default ({ show, setShow, barber, service }) => {
                                 {hour.map((item, key) => (
                                     <TimeItem
                                         key={key}
-                                        onPress={() => {}}
+                                        onPress={() => setSelectedHour(item)}
+                                        style={{
+                                            backgroundColor: item === selectedHour ? '#4EADBE' : '#FFFFFF'
+                                        }}
                                     >
-                                        <TimeItemText>{item}</TimeItemText>
+                                        <TimeItemText style={{color:item === selectedHour ? '#FFFFFF' : '#000000'}}>{item}</TimeItemText>
                                     </TimeItem>
                                 ))}
                             </TimeList>
@@ -361,7 +386,7 @@ export default ({ show, setShow, barber, service }) => {
                    
 
                         <ScheduleButton onPress={handleScheduleClick}>
-                <ScheduleButtonText>Finalizar Agendamento {selectedDay}</ScheduleButtonText>
+                <ScheduleButtonText>Finalizar Agendamento</ScheduleButtonText>
                         </ScheduleButton>
                 </ModalBody>
             </ModalArea>
